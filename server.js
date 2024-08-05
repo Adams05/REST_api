@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
+require('dotenv').config();
 
 // Creating an express application instance
 const app = express();
@@ -18,7 +19,7 @@ app.use(
 
 // Connect to MongoDB
 mongoose
-	.connect('mongodb+srv://frankie:7898f65Herc@cluster0.gunpwa8.mongodb.net/')
+	.connect(process.env.MONGODB_URI)
 	.then(() => {
 		console.log('Connected to MongoDB');
 	})
@@ -49,7 +50,7 @@ const verifyToken = (req, res, next) => {
 		return res.status(401).json({ error: 'Unauthorized' });
 	}
 
-	jwt.verify(token, 'secret', (err, decoded) => {
+	jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
 		if (err) {
 			return res.status(401).json({ error: 'Unauthorized' });
 		}
@@ -107,7 +108,7 @@ app.post('/api/login', async (req, res) => {
 		}
 
 		// Generate JWT token
-		const token = jwt.sign({ email: user.email }, 'secret', {
+		const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, {
 			expiresIn: '1h',
 		});
 		res.status(200).json({ token });
