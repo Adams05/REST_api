@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { loadUser, logout } from '../redux/actions/authActions';
 import Loading from '../components/Loading';
+import Alert from '../components/Alert';
 
 const UserDetails = () => {
 	const dispatch = useDispatch();
@@ -14,7 +15,7 @@ const UserDetails = () => {
 
 	useEffect(() => {
 		if (auth.isAuthenticated) {
-			setLoading(false); // User is already authenticated
+			setLoading(false);
 		} else {
 			dispatch(loadUser());
 		}
@@ -46,6 +47,7 @@ const UserDetails = () => {
 					<p>Email: {auth.user.email}</p>
 					<p>Occupation: {auth.user.occupation}</p>
 					<button onClick={handleLogout}>Logout</button>
+					<Alert />
 				</div>
 			) : (
 				<p>
