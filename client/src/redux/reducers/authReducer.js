@@ -8,6 +8,8 @@ import {
 	LOAD_USER,
 	UPDATE_OCCUPATION_SUCCESS,
 	UPDATE_OCCUPATION_FAIL,
+	DELETE_OCCUPATION_SUCCESS,
+	DELETE_OCCUPATION_FAIL,
 } from '../actionTypes';
 
 const initialState = {
@@ -80,7 +82,20 @@ const authReducer = (state = initialState, action) => {
 		case UPDATE_OCCUPATION_FAIL:
 			return {
 				...state,
-				error: action.payload.error, // or just a generic error message
+				error: action.payload.error,
+				loading: false,
+			};
+		case DELETE_OCCUPATION_SUCCESS:
+			return {
+				...state,
+				user: { ...state.user, occupation: null },
+				loading: false,
+				error: null,
+			};
+		case DELETE_OCCUPATION_FAIL:
+			return {
+				...state,
+				error: action.payload.error,
 				loading: false,
 			};
 		default:

@@ -9,10 +9,14 @@ import {
 	AUTH_ERROR,
 	UPDATE_OCCUPATION_SUCCESS,
 	UPDATE_OCCUPATION_FAIL,
+	DELETE_OCCUPATION_SUCCESS,
+	DELETE_OCCUPATION_FAIL,
 } from '../actionTypes';
 
 const registerURL = 'http://localhost:5000/api/register';
 const loginURL = 'http://localhost:5000/api/login';
+const userURL = 'http://localhost:5000/api/user';
+const occupationURL = 'http://localhost:5000/api/user/occupation';
 
 export const register =
 	({ username, email, password, occupation }) =>
@@ -31,12 +35,12 @@ export const register =
 				type: REGISTER_SUCCESS,
 				payload: res.data,
 			});
-			return Promise.resolve(); // Resolve the promise on success
+			return Promise.resolve();
 		} catch (err) {
 			dispatch({
 				type: REGISTER_FAIL,
 			});
-			return Promise.reject(err); // Reject the promise on failure
+			return Promise.reject(err);
 		}
 	};
 
@@ -45,7 +49,7 @@ export const login = (email, password) => async (dispatch) => {
 	try {
 		const response = await axios.post(
 			loginURL,
-			{ email, password }, // Correctly formatted object
+			{ email, password },
 			{
 				headers: {
 					'Content-Type': 'application/json',
@@ -87,7 +91,7 @@ export const loadUser = () => async (dispatch) => {
 		const token = localStorage.getItem('token');
 
 		// Make the authenticated request
-		const response = await axios.get('http://localhost:5000/api/user', {
+		const response = await axios.get(userURL, {
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
@@ -109,15 +113,45 @@ export const loadUser = () => async (dispatch) => {
 // Action to update user occupation
 export const updateOccupation = (occupation) => async (dispatch) => {
 	try {
-		const res = await axios.patch('/api/user/occupation', { occupation });
+		const token = localStorage.getItem('token');
+
+		const response = await axios.patch(
+			'http://localhost:5000/api/user/occupation',
+			{ occupation },
+			{
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${token}`,
+				},
+			}
+		);
+		dispatch({ type: UPDATE_OCCUPATION_SUCCESS, payload: response.data });
+	} catch (error) {
+		console.error('Failed to update occupation:', error);
 		dispatch({
-			type: UPDATE_OCCUPATION_SUCCESS,
+			type: UPDATE_OCCUPATION_FAIL,
+			payload: error.response ? error.response.data.error : 'Update failed',
+		});
+	}
+};
+
+export const deleteOccupation = () => async (dispatch) => {
+	try {
+		const token = localStorage.getItem('token');
+
+		const res = await axios.delete(occupationURL, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+		dispatch({
+			type: DELETE_OCCUPATION_SUCCESS,
 			payload: res.data,
 		});
 	} catch (error) {
 		console.error('Failed to update occupation:', error);
 		dispatch({
-			type: UPDATE_OCCUPATION_FAIL,
+			type: DELETE_OCCUPATION_FAIL,
 		});
 	}
 };

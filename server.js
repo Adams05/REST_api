@@ -12,7 +12,7 @@ const PORT = 5000;
 // Enable cors
 app.use(
 	cors({
-		origin: 'http://localhost:3000', // Replace with your client origin
+		origin: 'http://localhost:3000',
 		allowedHeaders: ['Authorization', 'Content-Type'],
 	})
 );
@@ -93,16 +93,16 @@ app.post('/api/login', async (req, res) => {
 	try {
 		console.log('Request Body:', req.body);
 
-		const { email, password } = req.body; // Destructure email and password from request body
+		const { email, password } = req.body;
 
 		// Check if the email exists
-		const user = await User.findOne({ email: email }); // Use the email variable correctly
+		const user = await User.findOne({ email: email });
 		if (!user) {
 			return res.status(401).json({ error: 'Invalid credentials' });
 		}
 
 		// Verify password
-		const isMatch = await bcrypt.compare(password, user.password); // Use the password variable correctly
+		const isMatch = await bcrypt.compare(password, user.password);
 		if (!isMatch) {
 			return res.status(401).json({ error: 'Invalid credentials' });
 		}
@@ -113,7 +113,7 @@ app.post('/api/login', async (req, res) => {
 		});
 		res.status(200).json({ token });
 	} catch (error) {
-		console.error('Login Error:', error); // Log the error for debugging
+		console.error('Login Error:', error);
 		res.status(500).json({ error: 'Internal server error' });
 	}
 });
@@ -137,9 +137,9 @@ app.get('/api/user', verifyToken, async (req, res) => {
 });
 
 // Route to update user occupation
-// Route to update user occupation
-app.patch('/api/user/occupation', async (req, res) => {
+app.patch('/api/user/occupation', verifyToken, async (req, res) => {
 	try {
+		console.log('Request Body:', req.body);
 		const { occupation } = req.body;
 		if (!req.user || !occupation) {
 			return res.status(400).json({ error: 'Invalid data' });
@@ -158,6 +158,26 @@ app.patch('/api/user/occupation', async (req, res) => {
 
 		res.status(200).json(updatedUser);
 	} catch (error) {
+		res.status(500).json({ error: 'Internal server error' });
+	}
+});
+
+// Route to delete occupation
+app.delete('/api/user/occupation', verifyToken, async (req, res) => {
+	try {
+		const user = await User.findOneAndUpdate(
+			{ email: req.user.email },
+			{ $unset: { occupation: '' } },
+			{ new: true }
+		);
+
+		if (!user) {
+			return res.status(404).json({ error: 'User not found' });
+		}
+
+		res.status(200).json({ message: 'Occupation deleted successfully', user });
+	} catch (error) {
+		console.error('Error deleting occupation:', error);
 		res.status(500).json({ error: 'Internal server error' });
 	}
 });

@@ -16,6 +16,10 @@
   text-decoration: none;
 }
 
+.pointer:hover {
+  cursor: pointer;
+}
+
 .card {
   border: solid 2px gray;
   box-shadow: 0px 0px 2px;
@@ -112,4 +116,51 @@
 
 .profile {
   font-family: "Oswald", sans-serif;
+}
+
+.profile-form input {
+  margin: 10px;
+}
+
+.btn-delete {
+  background: red;
+  width: 25px;
+  height: 25px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  float: right;
+}
+
+.alert {
+	padding: 10px;
+	margin: 10px 0;
+	border: 1px solid transparent;
+	border-radius: 4px;
+}
+
+.alert-success {
+	color: #155724;
+	background-color: #d4edda;
+	border-color: #c3e6cb;
+}
+
+.alert-error {
+	color: #721c24;
+	background-color: #f8d7da;
+	border-color: #f5c6cb;
+}
+
+.btn-close {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+	background: red;
+	border: none;
+  width: 25px;
+  height: 25px;
+  float: right;
+  color: #fff;
+	cursor: pointer;
 }
