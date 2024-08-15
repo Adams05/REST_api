@@ -2,6 +2,10 @@
   margin-top: 20px;
 }
 
+.mr-2 {
+  margin-right: 20px;
+}
+
 .center-element {
   margin-left: auto;
   margin-right: auto;
@@ -122,6 +126,25 @@
   margin: 10px;
 }
 
+.modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.5);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.modal-content {
+	background: white;
+	padding: 20px;
+	border-radius: 5px;
+	text-align: center;
+}
+
 .btn-delete {
   background: red;
   width: 25px;
@@ -132,6 +155,12 @@
   justify-content: center;
   float: right;
 }
+
+.btn-danger {
+  background: red;
+  color: #fff;
+}
+
 
 .alert {
 	padding: 10px;

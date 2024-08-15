@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
 	updateOccupation,
 	deleteOccupation,
+	deleteAccount,
 } from '../redux/actions/authActions';
 import { setAlert, hideAlert } from '../redux/actions/alertActions';
 import Alert from './Alert';
@@ -11,7 +13,9 @@ const Profile = () => {
 	const auth = useSelector((state) => state.auth);
 	const { message, type } = useSelector((state) => state.alert);
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 	const [show, setShow] = useState(false);
+	const [showModal, setShowModal] = useState(false);
 	const [occupation, setOccupation] = useState('');
 
 	useEffect(() => {
@@ -33,7 +37,7 @@ const Profile = () => {
 	};
 
 	const handleSubmit = async (e) => {
-		e.preventDefault(); // Add e.preventDefault() to prevent default form submission behavior
+		e.preventDefault();
 		try {
 			console.log('Dispatching updateOccupation');
 			await dispatch(updateOccupation(occupation));
@@ -55,6 +59,35 @@ const Profile = () => {
 		dispatch(setAlert('Occupation deleted successfully', 'success'));
 	};
 
+	const handleDeleteAccount = async (e) => {
+		e.preventDefault();
+		setShowModal(true);
+	};
+
+	const confirmDeleteAccount = async () => {
+		setShowModal(false);
+		await dispatch(deleteAccount());
+		navigate('/register');
+	};
+
+	const cancelDeleteAccount = () => {
+		setShowModal(false);
+	};
+
+	const DeleteAccountModal = ({ onClose, onConfirm }) => (
+		<div className='modal'>
+			<div className='modal-content'>
+				<h3>Are you sure you wish to delete your account?</h3>
+				<button onClick={onConfirm} className='btn btn-danger mr-2'>
+					Delete
+				</button>
+				<button onClick={onClose} className='btn btn-primary'>
+					Cancel
+				</button>
+			</div>
+		</div>
+	);
+
 	return (
 		<div className='container'>
 			{!auth.user ? (
@@ -68,7 +101,10 @@ const Profile = () => {
 						{!auth.user.occupation ? (
 							<>
 								{!show ? (
-									<h3 onClick={handleEditClick} className='pointer'>
+									<h3
+										onClick={handleEditClick}
+										className='pointer btn btn-primary'
+									>
 										Add Occupation
 									</h3>
 								) : (
@@ -92,6 +128,7 @@ const Profile = () => {
 										</button>
 									</form>
 								)}
+
 								{message && (
 									<Alert
 										message={message}
@@ -113,8 +150,17 @@ const Profile = () => {
 								</h3>
 							</>
 						)}
+						<button onClick={handleDeleteAccount} className='btn btn-danger'>
+							Delete Account
+						</button>
 					</div>
 				</div>
+			)}
+			{showModal && (
+				<DeleteAccountModal
+					onClose={cancelDeleteAccount}
+					onConfirm={confirmDeleteAccount}
+				/>
 			)}
 		</div>
 	);

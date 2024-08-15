@@ -10,6 +10,8 @@ import {
 	UPDATE_OCCUPATION_FAIL,
 	DELETE_OCCUPATION_SUCCESS,
 	DELETE_OCCUPATION_FAIL,
+	DELETE_ACCOUNT_SUCCESS,
+	DELETE_ACCOUNT_FAIL,
 } from '../actionTypes';
 
 const initialState = {
@@ -93,6 +95,22 @@ const authReducer = (state = initialState, action) => {
 				error: null,
 			};
 		case DELETE_OCCUPATION_FAIL:
+			return {
+				...state,
+				error: action.payload.error,
+				loading: false,
+			};
+		case DELETE_ACCOUNT_SUCCESS:
+			localStorage.removeItem('token');
+			return {
+				...state,
+				isAuthenticated: false,
+				user: null,
+				token: null,
+				loading: null,
+				error: null,
+			};
+		case DELETE_ACCOUNT_FAIL:
 			return {
 				...state,
 				error: action.payload.error,

@@ -11,6 +11,8 @@ import {
 	UPDATE_OCCUPATION_FAIL,
 	DELETE_OCCUPATION_SUCCESS,
 	DELETE_OCCUPATION_FAIL,
+	DELETE_ACCOUNT_SUCCESS,
+	DELETE_ACCOUNT_FAIL,
 } from '../actionTypes';
 
 const registerURL = 'http://localhost:5000/api/register';
@@ -135,6 +137,7 @@ export const updateOccupation = (occupation) => async (dispatch) => {
 	}
 };
 
+// Delete occupation
 export const deleteOccupation = () => async (dispatch) => {
 	try {
 		const token = localStorage.getItem('token');
@@ -152,6 +155,32 @@ export const deleteOccupation = () => async (dispatch) => {
 		console.error('Failed to update occupation:', error);
 		dispatch({
 			type: DELETE_OCCUPATION_FAIL,
+		});
+	}
+};
+
+// Delete user account
+export const deleteAccount = () => async (dispatch) => {
+	try {
+		const token = localStorage.getItem('token');
+
+		const res = await axios.delete(userURL, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+		dispatch({
+			type: DELETE_ACCOUNT_SUCCESS,
+			payload: res.data,
+		});
+
+		// Remove token after successful account deletion
+		localStorage.removeItem('token');
+	} catch (error) {
+		console.error('Failed to delete account:', error);
+		dispatch({
+			type: DELETE_ACCOUNT_FAIL,
+			payload: error.response ? error.response.data.error : 'Update failed',
 		});
 	}
 };
