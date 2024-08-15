@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { register } from '../redux/actions/authActions';
+import { setAlert, hideAlert } from '../redux/actions/alertActions';
+import Alert from './Alert';
 
 const Register = () => {
+	const { message, type } = useSelector((state) => state.alert);
 	const [formData, setFormData] = useState({
 		username: '',
 		email: '',
@@ -15,6 +18,10 @@ const Register = () => {
 	const navigate = useNavigate();
 
 	const { username, email, password, occupation } = formData;
+
+	const handleCloseAlert = () => {
+		dispatch(hideAlert());
+	};
 
 	const onChange = (e) =>
 		setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -34,6 +41,7 @@ const Register = () => {
 			.catch((err) => {
 				// Handle registration error if needed
 				console.error(err);
+				dispatch(setAlert('Email already registered', 'error'));
 			});
 	};
 
@@ -65,7 +73,7 @@ const Register = () => {
 					<div>
 						<input
 							type='text'
-							placeholder='Occupation'
+							placeholder='Occupation (Not Required)'
 							name='occupation'
 							value={occupation}
 							onChange={onChange}
@@ -81,6 +89,9 @@ const Register = () => {
 							required
 						/>
 					</div>
+					{message && (
+						<Alert message={message} type={type} onClose={handleCloseAlert} />
+					)}
 					<button class='center-element mt-2 btn btn-primary' type='submit'>
 						Register
 					</button>

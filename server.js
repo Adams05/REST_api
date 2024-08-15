@@ -162,6 +162,23 @@ app.patch('/api/user/occupation', verifyToken, async (req, res) => {
 	}
 });
 
+// Route to delete user account
+app.delete('/api/user', verifyToken, async (req, res) => {
+	try {
+		// Find and delete the user by email
+		const deleteUser = await User.findOneAndDelete({ email: req.user.email });
+
+		if (!deleteUser) {
+			return res.status(404).json({ error: 'User not found' });
+		}
+
+		res.status(200).json({ message: 'Account deleted successfully' });
+	} catch (error) {
+		console.error('Error deleting account:', error);
+		res.status(500).json({ error: 'Internal server error' });
+	}
+});
+
 // Route to delete occupation
 app.delete('/api/user/occupation', verifyToken, async (req, res) => {
 	try {

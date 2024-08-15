@@ -4,7 +4,9 @@
 	"description": "RESTful Api made with express.js and React",
 	"main": "index.js",
 	"scripts": {
-		"start": "node server.js"
+		"server": "nodemon server.js",
+		"client": "cd client && npm start",
+		"dev": "concurrently \"npm run server\" \"npm run client\""
 	},
 	"keywords": [],
 	"author": "",
@@ -17,5 +19,8 @@
 		"formidable": "^3.5.1",
 		"jsonwebtoken": "^9.0.2",
 		"mongoose": "^8.5.1"
+	},
+	"devDependencies": {
+		"concurrently": "^8.2.2"
 	}
 }
